@@ -44,7 +44,7 @@ if [ -z "$FILE" ]; then
 fi
 
 [ -z "$KEY" ] && KEY="${FILE##*/}"
-[ -z "$CONTENT_TYPE" ] && CONTENT_TYPE="binary/octet-stream"
+[ -z "$CONTENT_TYPE" ] && CONTENT_TYPE=$(file --mime-type -b "$FILE")
 
 MD5SUM=$(openssl dgst -md5 -binary "$FILE" | openssl enc -base64)
  
@@ -52,6 +52,4 @@ aws s3api put-object --bucket "$BUCKET" --key "$KEY" --body "$FILE" --content-ty
 
 echo "$BUCKET/$KEY"
 
-shift
 exit 0
-

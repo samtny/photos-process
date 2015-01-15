@@ -47,12 +47,12 @@ if [ -z "$KEY" ]; then
 fi
 
 ./s3put -b "$BUCKET" -k "$KEY" "$FILE"
- 
-./resourceput -d "$BUCKET" "$KEY" 
 
-TYPE=$(./type "$FILE")
+RESOURCE_TYPE=$(./resourcetype "$FILE")
 
-case $TYPE in
+./resourceput -d "$BUCKET" -t "$RESOURCE_TYPE" "$KEY"
+
+case $RESOURCE_TYPE in
   "Image")
     THUMB_COMMAND=./thumb
     ;;
@@ -76,4 +76,3 @@ do
 done
 
 exit 0
-

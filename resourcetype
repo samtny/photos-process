@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="Usage: type [FILE]"
+USAGE="Usage: resourcetype [FILE]"
 
 if [ $# -lt 1 ]; then
   echo "$USAGE"
@@ -20,4 +20,3 @@ EXTENSION=$(echo "${FILENAME##*.}" | tr '[:upper:]' '[:lower:]')
 [[ $EXTENSION =~ $RE_VIDEO ]] && echo "Video" && exit 0
 
 echo "Other" && exit 0
-
