@@ -2,7 +2,7 @@
 
 set -e
 
-USAGE="Usage: vmeta [original]"
+USAGE="Usage: metav [original]"
 
 if [ $# -lt 1 ]; then
   echo "$USAGE"
@@ -22,4 +22,3 @@ avconv -i "$ORIGINAL" 2>&1 | grep -v 'output file must be specified' >>$META
 echo "$META"
 
 exit 0
-

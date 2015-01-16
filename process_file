@@ -68,11 +68,11 @@ variants=( 200x200 722x722 )
 
 for DIMENSIONS in "${variants[@]}"
 do
-  COMMAND=("$THUMB_COMMAND" "-d" "$DIMENSIONS" "$FILE")
+  COMMAND=("$THUMB_COMMAND" "-d" "$DIMENSIONS" "-n" "$FILE")
 
   THUMB=$(${COMMAND[@]})
 
-  ./s3put -b "$BUCKET" -k "__thumbs/$DIMENSIONS/$KEY" -c "image/jpeg" "$THUMB"
+  ./s3put -b "$BUCKET" -k "__thumbs/$DIMENSIONS/${KEY}.jpg" -c "image/jpeg" "$THUMB"
 done
 
 exit 0
