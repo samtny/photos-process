@@ -15,9 +15,9 @@ FILENAME=$(basename "$ORIGINAL")
 
 [ "$WORKING_DIR" = "" ] && WORKING_DIR=.
 
-META=$WORKING_DIR/meta__$FILENAME.txt
+META="$WORKING_DIR/meta__$FILENAME.txt"
 
-identify -verbose "$ORIGINAL" >$META
+identify -verbose "$ORIGINAL" >"$META"
 
 trim()
 {

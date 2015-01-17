@@ -15,9 +15,9 @@ FILENAME=$(basename "$ORIGINAL")
 
 [ "$WORKING_DIR" = "" ] && WORKING_DIR=.
 
-META=$WORKING_DIR/meta__$FILENAME.txt
+META="$WORKING_DIR/meta__$FILENAME.txt"
 
-avconv -i "$ORIGINAL" 2>&1 | grep -v 'output file must be specified' >$META
+avconv -i "$ORIGINAL" 2>&1 | grep -v 'output file must be specified' >"$META"
 
 trim()
 {
