@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-
+set -x
 USAGE="Usage: metav [original]"
 
 if [ $# -lt 1 ]; then
@@ -17,8 +17,22 @@ FILENAME=$(basename "$ORIGINAL")
 
 META=$WORKING_DIR/meta__$FILENAME.txt
 
-avconv -i "$ORIGINAL" 2>&1 | grep -v 'output file must be specified' >>$META
+avconv -i "$ORIGINAL" 2>&1 | grep -v 'output file must be specified' >$META
 
-echo "$META"
+trim()
+{
+    local var="$*"
+    var="${var#"${var%%[![:space:]]*}"}"   # remove leading whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"   # remove trailing whitespace characters
+    echo -n "$var"
+}
+
+DIMENSIONS=$(trim `cat "$META" | grep Stream | grep 'Video:' | cut -d, -f3 | cut -d[ -f1`)
+WIDTH=$(echo "$DIMENSIONS" | cut -dx -f1)
+HEIGHT=$(echo "$DIMENSIONS" | cut -dx -f2)
+
+ASPECTRATIO=$(cat "$META" | grep Stream | grep 'Video:' | cut -d, -f3 | cut -d[ -f2 | cut -d] -f1 | cut -d' ' -f4)
+
+echo "{ width: ${WIDTH}, height: ${HEIGHT}, aspect: ${WIDTH} / ${HEIGHT}, aspectratio: \"$ASPECTRATIO\" }"
 
 exit 0

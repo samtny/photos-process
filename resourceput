@@ -4,16 +4,19 @@ set -e
 
 usage()
 {
-  echo "Usage: resourceput -d [db_name] -t [resource_type] [resource_key]"
+  echo "Usage: resourceput -d [db_name] -t [resource_type] -m [resource_meta] [resource_key]"
 }
 
-while getopts ":d:t:" opt; do
+while getopts ":d:t:m:" opt; do
   case $opt in
     d)
       DB_NAME=$OPTARG
       ;;
     t)
       RESOURCE_TYPE=$OPTARG
+      ;;
+    m)
+      RESOURCE_META=$OPTARG
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -31,8 +34,6 @@ if [ -z "$DB_NAME" ]; then
   exit 1
 fi
 
-[ -z "$RESOURCE_TYPE" ] && RESOURCE_TYPE=unknown
-
 shift $((OPTIND-1))
 
 RESOURCE_KEY=$1
@@ -43,6 +44,8 @@ if [ -z "$RESOURCE_KEY" ]; then
 fi
 
 RESOURCE_NAME=$(basename "$RESOURCE_KEY")
+[ -z "$RESOURCE_TYPE" ] && RESOURCE_TYPE=unknown
+[ -z "$RESOURCE_META" ] && RESOURCE_META="{}"
 
 [ "$MONGO_HOST" = "" ] && MONGO_HOST="127.0.0.1:27017"
 MONGO_DB="$DB_NAME"
@@ -55,7 +58,7 @@ FOLDER_KEY=$(dirname "$RESOURCE_KEY")
 
 FOLDER_ID=$(./folderput -d "$DB_NAME" "$FOLDER_KEY")
 
-mongo --quiet $MONGO_HOST/$MONGO_DB --eval "db.$MONGO_COLLECTION_RESOURCE.update( { key:\"$RESOURCE_KEY\" }, { \$set: { key:\"$RESOURCE_KEY\", name: \"$RESOURCE_NAME\", folder_id: $FOLDER_ID, type: \"$RESOURCE_TYPE\" } }, { upsert: true } )" >/dev/null
+mongo --quiet $MONGO_HOST/$MONGO_DB --eval "db.$MONGO_COLLECTION_RESOURCE.update( { key:\"$RESOURCE_KEY\" }, { \$set: { key:\"$RESOURCE_KEY\", name: \"$RESOURCE_NAME\", folder_id: $FOLDER_ID, type: \"$RESOURCE_TYPE\", meta: $RESOURCE_META } }, { upsert: true } )" >/dev/null
 
 RESOURCE_ID=$(mongo --quiet $MONGO_HOST/$MONGO_DB --eval "printjson(db.$MONGO_COLLECTION_RESOURCE.find( { key:\"$RESOURCE_KEY\" }, { _id: 1 } ).toArray() )" | cut -d: -f2 | cut -d' ' -f2 )
 

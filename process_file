@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-
+set -x
 usage()
 {
   echo "process_file -b [bucket] -k [key] file" 
@@ -50,21 +50,21 @@ fi
 
 RESOURCE_TYPE=$(./resourcetype "$FILE")
 
-./resourceput -d "$BUCKET" -t "$RESOURCE_TYPE" "$KEY"
-
 case $RESOURCE_TYPE in
   "Image")
     THUMB_COMMAND=./thumb
-    META_COMMAND=./meta
+    RESOURCE_META=$(./meta "$FILE")
     ;;
   "Video")
     THUMB_COMMAND=./thumbv
-    META_COMMAND=./metav
+    RESOURCE_META=$(./metav "$FILE")
     ;;
   "Other")
     exit 0
     ;;
 esac
+
+./resourceput -d "$BUCKET" -t "$RESOURCE_TYPE" -m "$RESOURCE_META" "$KEY"
 
 variants=( 200x200 722x722 )
 

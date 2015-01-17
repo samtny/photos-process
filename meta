@@ -17,8 +17,20 @@ FILENAME=$(basename "$ORIGINAL")
 
 META=$WORKING_DIR/meta__$FILENAME.txt
 
-identify -verbose "$ORIGINAL" >>$META
+identify -verbose "$ORIGINAL" >$META
 
-echo "$META"
+trim()
+{
+    local var="$*"
+    var="${var#"${var%%[![:space:]]*}"}"   # remove leading whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"   # remove trailing whitespace characters
+    echo -n "$var"
+}
+
+DIMENSIONS=$(trim `cat "$META" | grep -m 1 Geometry | cut -d: -f2 | cut -d+ -f1`)
+WIDTH=$(echo "$DIMENSIONS" | cut -dx -f1)
+HEIGHT=$(echo "$DIMENSIONS" | cut -dx -f2)
+
+echo "{ width: ${WIDTH}, height: ${HEIGHT}, aspect: ${WIDTH} / ${HEIGHT} }"
 
 exit 0
