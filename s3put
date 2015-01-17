@@ -4,10 +4,10 @@ set -e
 
 usage()
 {
-  echo "Usage: s3put -b [bucket] -k [key] -c [content-type] file"
+  echo "Usage: s3put -b [bucket] -k [key] -c [content-type] -m [max-age] file"
 }
 
-while getopts ":b:k:c:" opt; do
+while getopts ":b:k:c:m:" opt; do
   case $opt in
     b)
       BUCKET=$OPTARG
@@ -17,6 +17,9 @@ while getopts ":b:k:c:" opt; do
       ;;
     c)
       CONTENT_TYPE=$OPTARG
+      ;;
+    m)
+      MAX_AGE=$OPTARG
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -45,10 +48,11 @@ fi
 
 [ -z "$KEY" ] && KEY="${FILE##*/}"
 [ -z "$CONTENT_TYPE" ] && CONTENT_TYPE=$(file --mime-type -b "$FILE")
+[ -z "$MAX_AGE" ] && MAX_AGE=3600
 
 MD5SUM=$(openssl dgst -md5 -binary "$FILE" | openssl enc -base64)
  
-aws s3api put-object --bucket "$BUCKET" --key "$KEY" --body "$FILE" --content-type $CONTENT_TYPE --content-md5 $MD5SUM >>/dev/null
+aws s3api put-object --bucket "$BUCKET" --key "$KEY" --body "$FILE" --content-type $CONTENT_TYPE --cache-control "max-age=${MAX_AGE}" --content-md5 $MD5SUM >>/dev/null
 
 echo "$BUCKET/$KEY"
 

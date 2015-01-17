@@ -55,9 +55,11 @@ RESOURCE_TYPE=$(./resourcetype "$FILE")
 case $RESOURCE_TYPE in
   "Image")
     THUMB_COMMAND=./thumb
+    META_COMMAND=./meta
     ;;
   "Video")
     THUMB_COMMAND=./thumbv
+    META_COMMAND=./metav
     ;;
   "Other")
     exit 0
