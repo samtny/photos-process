@@ -2,4 +2,3 @@
 
 export WORKING_DIR=./working && mkdir -p $WORKING_DIR
 export MONGO_HOST=127.0.0.1:27017
-

@@ -52,7 +52,7 @@ fi
 
 MD5SUM=$(openssl dgst -md5 -binary "$FILE" | openssl enc -base64)
  
-aws s3api put-object --bucket "$BUCKET" --key "$KEY" --body "$FILE" --content-type $CONTENT_TYPE --cache-control "max-age=${MAX_AGE}" --content-md5 $MD5SUM >>/dev/null
+aws s3api put-object --bucket "$BUCKET" --key "$KEY" --body "$FILE" --content-type "$CONTENT_TYPE" --cache-control "max-age=${MAX_AGE}" --content-md5 "$MD5SUM" >>/dev/null
 
 echo "$BUCKET/$KEY"
 

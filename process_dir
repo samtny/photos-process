@@ -51,11 +51,11 @@ find -P "$DIR" -type f -print0 | while IFS= read -r -d $'\0' FILE; do
   echo "$FILE" >> "$RESUME_FILE"
   RESUME=""
 
-  KEY=${FILE:${#DIR}}
-  KEY=${KEY#/}
+  KEY="${FILE:${#DIR}}"
+  KEY="${KEY#/}"
 
   if [ ! -z "$PREFIX" ]; then
-    KEY=$PREFIX/$KEY
+    KEY="$PREFIX/$KEY"
   fi
 
   ./process_file -b "$BUCKET" -k "$KEY" "$FILE"

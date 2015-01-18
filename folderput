@@ -61,4 +61,3 @@ fi
 [ "$CHILD_FOLDER_ID" = "" ] && echo "$FOLDER_ID"
 
 exit 0
-

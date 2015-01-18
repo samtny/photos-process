@@ -35,11 +35,11 @@ if [ -z "$FROM_BUCKET" ] || [ -z "$TO_BUCKET" ]; then
   exit 1
 fi
 
-./s3list $FROM_BUCKET 100 | while IFS= read -r FROM_KEY; do
+./s3list "$FROM_BUCKET" | while IFS= read -r FROM_KEY; do
   FILE=$(./s3get -b "$FROM_BUCKET" "$FROM_KEY")
 
   TO_KEY="$FROM_KEY"
-  [ ! -z "$PREFIX" ] && TO_KEY=$PREFIX/$TO_KEY
+  [ ! -z "$PREFIX" ] && TO_KEY="$PREFIX/$TO_KEY"
 
   ./process_file -b "$TO_BUCKET" -k "$TO_KEY" "$FILE"
 done

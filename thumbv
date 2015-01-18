@@ -31,12 +31,11 @@ done
 
 [ -z "$WORKING_DIR" ] && WORKING_DIR=.
 [ -z "$DIMENSIONS" ] && DIMENSIONS=200x200
-
-mkdir -p $WORKING_DIR/$DIMENSIONS
-
 [ -z "$QUALITY" ] && QUALITY=80
 
 shift $((OPTIND-1))
+
+mkdir -p "$WORKING_DIR/$DIMENSIONS"
 
 while [ $# -gt 0 ]
 do
@@ -44,8 +43,8 @@ do
 
   FILENAME=$(basename "$ORIGINAL")
 
-  FRAME=$WORKING_DIR/frame__$FILENAME.jpg
-  THUMB=$WORKING_DIR/${DIMENSIONS}/$FILENAME.jpg
+  FRAME="$WORKING_DIR/frame__$FILENAME.jpg"
+  THUMB="$WORKING_DIR/${DIMENSIONS}/$FILENAME.jpg"
 
   DURATION=$(avconv -i "$ORIGINAL" 2>&1 | grep Duration | cut -d' ' -f4 | sed s/,//)
 
@@ -55,12 +54,12 @@ do
   [ $SECONDS -lt 30 ] && SS=5
   [ $SECONDS -lt 5 ] && SS=0
 
-  avconv -loglevel quiet -ss $SS -i "$ORIGINAL" -strict experimental -vframes 1 $FRAME
+  avconv -loglevel quiet -ss "$SS" -i "$ORIGINAL" -strict experimental -vframes 1 "$FRAME"
 
   if [ -z "$NOPAD" ]; then
-    convert "$FRAME" -auto-orient +repage -thumbnail $DIMENSIONS -background white -gravity center -extent $DIMENSIONS -strip -interlace Plane -quality $QUALITY "$THUMB"
+    convert "$FRAME" -auto-orient +repage -thumbnail "$DIMENSIONS" -background white -gravity center -extent "$DIMENSIONS" -strip -interlace Plane -quality "$QUALITY" "$THUMB"
   else
-    convert "$FRAME" -auto-orient +repage -thumbnail $DIMENSIONS -strip -interlace Plane -quality $QUALITY "$THUMB"
+    convert "$FRAME" -auto-orient +repage -thumbnail "$DIMENSIONS" -strip -interlace Plane -quality "$QUALITY" "$THUMB"
   fi
 
   echo "$THUMB"

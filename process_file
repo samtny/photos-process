@@ -50,13 +50,13 @@ fi
 
 RESOURCE_TYPE=$(./resourcetype "$FILE")
 
-case $RESOURCE_TYPE in
+case "$RESOURCE_TYPE" in
   "Image")
-    THUMB_COMMAND=./thumb
+    THUMB_COMMAND="./thumb"
     RESOURCE_META=$(./meta "$FILE")
     ;;
   "Video")
-    THUMB_COMMAND=./thumbv
+    THUMB_COMMAND="./thumbv"
     RESOURCE_META=$(./metav "$FILE")
     ;;
   "Other")
@@ -72,7 +72,7 @@ for DIMENSIONS in "${variants[@]}"
 do
   COMMAND=("$THUMB_COMMAND" "-d" "$DIMENSIONS" "-n" "$FILE")
 
-  THUMB=$(${COMMAND[@]})
+  THUMB="$(${COMMAND[@]})"
 
   ./s3put -b "$BUCKET" -k "__thumbs/$DIMENSIONS/${KEY}.jpg" -c "image/jpeg" "$THUMB"
 done

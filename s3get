@@ -36,7 +36,7 @@ for KEY in $@
 do
   FILENAME=$(basename "$KEY")
 
-  DESTINATION=$WORKING_DIR/$FILENAME
+  DESTINATION="$WORKING_DIR/$FILENAME"
 
   aws s3api get-object --bucket "$BUCKET" --key "$KEY" "$DESTINATION" >>/dev/null
 
@@ -44,4 +44,3 @@ do
 done
 
 exit 0
-

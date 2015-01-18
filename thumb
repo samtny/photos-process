@@ -44,12 +44,12 @@ do
 
   FILENAME=$(basename "$ORIGINAL")
  
-  THUMB=$WORKING_DIR/$DIMENSIONS/$FILENAME.jpg
+  THUMB="$WORKING_DIR/$DIMENSIONS/$FILENAME.jpg"
 
   if [ "$NOPAD" = "" ]; then
-    convert "$ORIGINAL" -auto-orient +repage -thumbnail $DIMENSIONS -background white -gravity center -extent $DIMENSIONS -strip -interlace Plane -quality $QUALITY "$THUMB"
+    convert "$ORIGINAL" -auto-orient +repage -thumbnail "$DIMENSIONS" -background white -gravity center -extent "$DIMENSIONS" -strip -interlace Plane -quality "$QUALITY" "$THUMB"
   else
-    convert "$ORIGINAL" -auto-orient +repage -thumbnail $DIMENSIONS -strip -interlace Plane -quality $QUALITY "$THUMB"
+    convert "$ORIGINAL" -auto-orient +repage -thumbnail "$DIMENSIONS" -strip -interlace Plane -quality "$QUALITY" "$THUMB"
   fi
 
   echo "$THUMB"
@@ -58,4 +58,3 @@ do
 done
 
 exit 0
-
