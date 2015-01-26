@@ -31,6 +31,8 @@ DIMENSIONS=$(trim `cat "$META" | grep -m 1 Geometry | cut -d: -f2 | cut -d+ -f1`
 WIDTH=$(echo "$DIMENSIONS" | cut -dx -f1)
 HEIGHT=$(echo "$DIMENSIONS" | cut -dx -f2)
 
+unlink "$META"
+
 echo "{ width: ${WIDTH}, height: ${HEIGHT}, aspect: ${WIDTH} / ${HEIGHT} }"
 
 exit 0

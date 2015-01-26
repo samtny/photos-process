@@ -42,15 +42,7 @@ fi
 
 [ -z "$WORKING_DIR" ] && WORKING_DIR=.
 
-RESUME_FILE="$WORKING_DIR/process_dir.resume"
-[ -f "$RESUME_FILE" ] && RESUME=$(cat "$RESUME_FILE")
-
 find -P "$DIR" -type f -print0 | while IFS= read -r -d $'\0' FILE; do
-  [ ! -z "$RESUME" ] && [ ! "$FILE" = "$RESUME" ] && continue
-  [ -f "$RESUME_FILE" ] && unlink "$RESUME_FILE"
-  echo "$FILE" >> "$RESUME_FILE"
-  RESUME=""
-
   KEY="${FILE:${#DIR}}"
   KEY="${KEY#/}"
 
@@ -60,7 +52,5 @@ find -P "$DIR" -type f -print0 | while IFS= read -r -d $'\0' FILE; do
 
   ./process_file -b "$BUCKET" -k "$KEY" "$FILE"
 done
-
-[ -f "$RESUME_FILE" ] && unlink "$RESUME_FILE"
 
 exit 0
