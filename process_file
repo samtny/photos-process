@@ -70,16 +70,19 @@ for DIMENSIONS in "${variants[@]}"
 do
   case "$RESOURCE_TYPE" in
     "Image")
-      THUMB=$(./thumb -d "$DIMENSIONS" -n "$FILE")
+      THUMB=$(./thumb -d "$DIMENSIONS" -n "$FILE") || true
       ;;
     "Video")
-      THUMB=$(./thumbv -d "$DIMENSIONS" -n "$FILE")
+      THUMB=$(./thumbv -d "$DIMENSIONS" -n "$FILE") || true
       ;;
   esac
 
-  ./s3put -b "$BUCKET" -k "__thumbs/$DIMENSIONS/${KEY}.jpg" -c "image/jpeg" "$THUMB"
+  if [ -f "$THUMB" ]; then
+    ./s3put -b "$BUCKET" -k "__thumbs/$DIMENSIONS/${KEY}.jpg" -c "image/jpeg" "$THUMB"
 
-  unlink "$THUMB"
+    unlink "$THUMB"
+  fi
 done
 
 exit 0
+

@@ -4,16 +4,19 @@ set -e
 
 usage()
 {
-  echo "process_dir -b [bucket] -p [prefix] dir" 
+  echo "process_dir -b [bucket] -p [prefix] -r [resume_file] dir" 
 }
 
-while getopts ":b:p:" opt; do
+while getopts ":b:p:r:" opt; do
   case $opt in
     b)
       BUCKET=$OPTARG
       ;;
     p)
       PREFIX=$OPTARG
+      ;;
+    r)
+      RESUME_FILE=$OPTARG
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -43,6 +46,14 @@ fi
 [ -z "$WORKING_DIR" ] && WORKING_DIR=.
 
 find -P "$DIR" -type f -print0 | while IFS= read -r -d $'\0' FILE; do
+  if [ "$RESUME_FILE" != "" ]; then
+    if [ "$RESUME_FILE" != "$FILE" ]; then
+      continue
+    else
+      RESUME_FILE=""
+    fi
+  fi
+
   KEY="${FILE:${#DIR}}"
   KEY="${KEY#/}"
 
@@ -54,3 +65,4 @@ find -P "$DIR" -type f -print0 | while IFS= read -r -d $'\0' FILE; do
 done
 
 exit 0
+

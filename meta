@@ -17,22 +17,27 @@ FILENAME=$(basename "$ORIGINAL")
 
 META="$WORKING_DIR/meta__$FILENAME.txt"
 
-identify -verbose "$ORIGINAL" >"$META"
+identify -verbose "$ORIGINAL" 2>/dev/null >"$META" || true
 
-trim()
-{
+if [ $? -eq 0 ]; then
+  trim()
+  {
     local var="$*"
     var="${var#"${var%%[![:space:]]*}"}"   # remove leading whitespace characters
     var="${var%"${var##*[![:space:]]}"}"   # remove trailing whitespace characters
     echo -n "$var"
-}
+  }
 
-DIMENSIONS=$(trim `cat "$META" | grep -m 1 Geometry | cut -d: -f2 | cut -d+ -f1`)
-WIDTH=$(echo "$DIMENSIONS" | cut -dx -f1)
-HEIGHT=$(echo "$DIMENSIONS" | cut -dx -f2)
+  DIMENSIONS=$(trim `cat "$META" | grep -m 1 Geometry | cut -d: -f2 | cut -d+ -f1`)
+  WIDTH=$(echo "$DIMENSIONS" | cut -dx -f1)
+  HEIGHT=$(echo "$DIMENSIONS" | cut -dx -f2)
 
-unlink "$META"
+  echo "{ width: ${WIDTH}, height: ${HEIGHT}, aspect: ${WIDTH} / ${HEIGHT} }"
+else
+  echo "{ width: null, height: null, aspect: null }"
+fi
 
-echo "{ width: ${WIDTH}, height: ${HEIGHT}, aspect: ${WIDTH} / ${HEIGHT} }"
+[ -f "$META" ] && unlink "$META"
 
 exit 0
+
