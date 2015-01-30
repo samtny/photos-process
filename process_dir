@@ -45,7 +45,7 @@ fi
 
 [ -z "$WORKING_DIR" ] && WORKING_DIR=.
 
-find -P "$DIR" -type f -print0 | while IFS= read -r -d $'\0' FILE; do
+find -P "$DIR" -type f -print0 | sort -z | while IFS= read -r -d $'\0' FILE; do
   if [ "$RESUME_FILE" != "" ]; then
     if [ "$RESUME_FILE" != "$FILE" ]; then
       continue
